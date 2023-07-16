@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
 
+import { useState } from 'react';
+import './App.css';
+import Navbar from './components/Layout/Navbar';
+import { ThemeContext } from './contexts/themeContext';
+import Home from './pages/Home'
+import { BrowserRouter, Routes,Route } from 'react-router-dom';
+import PreviousYearPaper from './pages/PreviousYearPaper';
+import Paper from './pages/Paper';
+import Lectures from './pages/Lectures';
+import Courses from './pages/Courses';
+import Auth from './pages/auth/Auth';
 function App() {
+  const [theme, setTheme] = useState("light");
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+<>
+<ThemeContext.Provider value={{theme,setTheme}}>
+
+
+  <BrowserRouter>
+  <Navbar></Navbar>
+  <Routes>
+    <Route path='/Auth' element={<Auth></Auth>}></Route>
+  <Route path='/' element={<Home></Home>}></Route>
+  <Route path='/pyp' element={<PreviousYearPaper></PreviousYearPaper>}></Route>
+  <Route path='/courses' element={<Courses></Courses>}/>
+  <Route path='/paper/:id' element={<Paper></Paper>}></Route>
+  </Routes>
+
+
+
+  </BrowserRouter>
+
+
+</ThemeContext.Provider>
+
+</>
   );
 }
 

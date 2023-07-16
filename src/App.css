@@ -1,7 +1,19 @@
 .App {
   text-align: center;
 }
+.image-container img {
 
+  animation: moveUpDown 2s ease-in-out infinite alternate;
+}
+
+@keyframes moveUpDown {
+  0% {
+    transform: translate(0%, 0%);
+  }
+  100% {
+    transform: translate(0%, 5%); /* Adjust the vertical position as desired */
+  }
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
