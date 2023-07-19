@@ -10,11 +10,17 @@ import Paper from './pages/Paper';
 import Lectures from './pages/Lectures';
 import Courses from './pages/Courses';
 import Auth from './pages/auth/Auth';
+import DiscussionRoom from './pages/DiscussionRoom';
+import { ActiveChatContext } from './contexts/activeChatContext';
+import VerifyAccount from './pages/auth/VerifyAccount';
 function App() {
   const [theme, setTheme] = useState("light");
+  const [activeChat,setActiveChat] = useState('none')
   return (
 <>
 <ThemeContext.Provider value={{theme,setTheme}}>
+<ActiveChatContext.Provider value={{activeChat,setActiveChat}}>
+
 
 
   <BrowserRouter>
@@ -25,12 +31,14 @@ function App() {
   <Route path='/pyp' element={<PreviousYearPaper></PreviousYearPaper>}></Route>
   <Route path='/courses' element={<Courses></Courses>}/>
   <Route path='/paper/:id' element={<Paper></Paper>}></Route>
+  <Route path='/chat-room' element={<DiscussionRoom></DiscussionRoom>}></Route>
+  <Route path='/account/verify' element={<VerifyAccount></VerifyAccount>}></Route>
   </Routes>
 
 
 
   </BrowserRouter>
-
+  </ActiveChatContext.Provider>
 
 </ThemeContext.Provider>
 

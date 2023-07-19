@@ -1,7 +1,46 @@
+import axios from 'axios';
 import React from 'react'
+import { useState } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
+import { AiFillEye } from 'react-icons/ai';
+import { BASE_URL_BACKEND } from '../../constants/globalConstants';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
+  const [form,setForm] = useState({name:'',uname:'',email:'',password:''});
+  const [show,setShow] = useState(false);
+  const navigate= useNavigate();
+  const togglePassword = (e)=>{
+    e.preventDefault();
+    setShow(show?false:true);
+  }
+  const handleChange = (e)=>{
+    setForm(form=>({...form,[e.target.id]:e.target.value}));
+  }
+
+  const handleSubmit = async(e)=>{
+    e.preventDefault();
+    
+try {
+  const signupReq = await axios.post(`${BASE_URL_BACKEND}/register`,form);
+const data = signupReq.data;
+if(data.success){
+  toast.success('User Registered SuccessFully,An email has been sent Please Verify Your Account');
+  setTimeout(()=>{
+    navigate(`/account/verify?token=${data.credentials.token}`);
+},5000)
+}
+else{
+  toast.error(data.message);
+}
+} catch (error) {
+  toast.error("Oops Some Error Occured "+error.message);
+}
+  }
   return (
+    <>
+    <Toaster position='top-center'></Toaster>
+    {/* Main */}
     <div className='flex justify-center '>
         <div className="bg-gray-100 mt-14 text-dark4 flex flex-col justify-center  sm:px-6 lg:px-8">
   <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -12,13 +51,13 @@ function SignUp() {
 
   <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div className="border-2 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-      <form className="space-y-6" >
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <div>
           <label for="name" className="block text-sm font-medium text-gray-700">
             Name
           </label>
           <div className="mt-1 text-dark">
-            <input id="name" name="name" type="text" autocomplete="name" required
+            <input value={form.name} onChange={handleChange} id="name" name="name" type="text" autocomplete="name" required
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
@@ -29,20 +68,32 @@ function SignUp() {
             Email address
           </label>
           <div className="mt-1 text-dark ">
-            <input id="email" name="email" type="email" autocomplete="email" required
+            <input onChange={handleChange} value={form.email} id="email" name="email" type="email" autocomplete="email" required
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
         </div>
-
+        <div>
+          <label for="email" className="block text-sm font-medium text-gray-700">
+            User Name
+          </label>
+          <div className="mt-1 text-dark ">
+            <input onChange={handleChange} value={form.uname} id="uname" name="uname" type="text" required
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+        </div>
         <div>
           <label for="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
-          <div className="mt-1 text-dark">
-            <input id="password" name="password" type="password" autocomplete="current-password" required
+          <div className="mt-1 text-dark flex">
+            <input value={form.password} onChange={handleChange} id="password" name="password" type={show?'text':'password'} autocomplete="current-password" required
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
+                <div className="text-gray ml-2 mt-auto mb-auto">
+              <i onMouseUp={togglePassword} onMouseDown={togglePassword}><AiFillEye></AiFillEye></i>
+            </div>
           </div>
         </div>
 
@@ -65,6 +116,8 @@ function SignUp() {
 </div>
 
     </div>
+    </>
+
   )
 }
 
